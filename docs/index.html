@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WASP</title>
+<meta name="description" content="WASP: Weakly Aligned Spatiotemporal Pairs for Fetal Brain MRI–Ultrasound Learning. NeurIPS 2026.">
+<meta property="og:title" content="WASP: Weakly Aligned Spatiotemporal Pairs for Fetal Brain MRI–Ultrasound Learning">
+<meta property="og:description" content="Teaching ultrasound-only foundation models to read fetal MRI without paired scans. NeurIPS 2026.">
+<meta property="og:image" content="static/teaser.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}]})"></script>
+<style>
+:root {
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --ink: #1d2126;
+  --muted: #5d6671;
+  --line: #e4e1da;
+  --accent: #2f6fb3;
+  --accent-soft: #e8f0f9;
+  --mri: #3d6db3;
+  --us: #4c9a47;
+  --wasp: #d99a0b;
+  --shadow: 0 1px 2px rgba(20, 24, 30, .05), 0 8px 24px rgba(20, 24, 30, .06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14171b;
+    --surface: #1b1f24;
+    --ink: #e8eaed;
+    --muted: #9aa3ad;
+    --line: #2c3239;
+    --accent: #7fb0e6;
+    --accent-soft: #1f2a37;
+    --wasp: #f2c318;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14171b;
+  --surface: #1b1f24;
+  --ink: #e8eaed;
+  --muted: #9aa3ad;
+  --line: #2c3239;
+  --accent: #7fb0e6;
+  --accent-soft: #1f2a37;
+  --wasp: #f2c318;
+  --shadow: none;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 17px/1.65 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+header { padding: 64px 0 28px; text-align: center; }
+.venue {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+h1 {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(30px, 5vw, 46px);
+  line-height: 1.15;
+  margin: 18px auto 8px;
+  max-width: 840px;
+  letter-spacing: -.01em;
+}
+h1 .name { color: var(--wasp); }
+.subtitle { color: var(--muted); font-size: 18px; margin: 0 auto 26px; max-width: 700px; }
+.authors { margin: 0 auto; max-width: 820px; font-size: 16.5px; }
+.authors span { display: inline-block; margin: 2px 10px; white-space: nowrap; }
+sup { font-size: .68em; color: var(--muted); }
+.affil { color: var(--muted); font-size: 14.5px; margin-top: 10px; }
+.affil span { display: inline-block; margin: 0 10px; }
+.links { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--bg);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+}
+.btn svg { width: 17px; height: 17px; fill: currentColor; }
+.btn.off { background: transparent; color: var(--muted); border: 1px solid var(--line); cursor: default; }
+figure { margin: 0; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+.card img { display: block; width: 100%; height: auto; border-radius: 6px; background: #fff; }
+figcaption { color: var(--muted); font-size: 14.5px; margin-top: 12px; line-height: 1.55; }
+section { padding: 40px 0 8px; }
+h2 {
+  font-family: "Source Serif 4", Georgia, serif;
+  font-weight: 600;
+  font-size: 27px;
+  margin: 0 0 14px;
+}
+p { margin: 0 0 14px; }
+.lead { font-size: 18px; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 22px 0 8px; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+.step b { display: block; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+.step p { margin: 0; font-size: 15.5px; color: var(--muted); }
+.eq { overflow-x: auto; padding: 4px 0; }
+.two { display: grid; grid-template-columns: 1.05fr 1fr; gap: 24px; align-items: center; }
+pre {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  overflow-x: auto;
+  font: 13.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  margin: 0;
+}
+footer { color: var(--muted); font-size: 14px; text-align: center; padding: 48px 0 40px; }
+footer a, a { color: var(--accent); }
+@media (max-width: 760px) {
+  header { padding-top: 40px; }
+  .steps, .two { grid-template-columns: 1fr; }
+  .card { padding: 10px; }
+  body { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="venue">NeurIPS 2026</span>
+    <h1><span class="name">WASP</span>: Weakly Aligned Spatiotemporal Pairs for Fetal Brain MRI–Ultrasound Learning</h1>
+    <p class="subtitle">Teaching ultrasound-only foundation models to read fetal MRI, without paired scans and without fine-tuning.</p>
+    <div class="authors">
+      <span>Francesco Correnti<sup>1</sup></span>
+      <span>Gabriele Magrini<sup>1</sup></span>
+      <span>Marco Mistretta<sup>1</sup></span>
+      <span>Niccolò Biondi<sup>2</sup></span>
+      <span>Pietro Pala<sup>1</sup></span>
+      <span>Alessandro Ramalli<sup>1</sup></span>
+      <span>Simona Fiori<sup>3</sup></span>
+      <span>Andrew D. Bagdanov<sup>1</sup></span>
+      <span>Matteo Lenge<sup>3</sup></span>
+    </div>
+    <div class="affil">
+      <span><sup>1</sup>University of Florence</span>
+      <span><sup>2</sup>University of Trento</span>
+      <span><sup>3</sup>Meyer Children's Hospital IRCCS</span>
+    </div>
+    <div class="links">
+      <span class="btn off"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6zM14 3.5V8h4.5z"/></svg>Paper (soon)</span>
+      <a class="btn" href="https://github.com/miccunifi/WASP"><svg viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>Code</a>
+    </div>
+  </header>
+
+  <figure class="card">
+    <img src="static/teaser.png" alt="Overview of WASP: paired MRI–US scans are unavailable, so WASP builds soft pairs with entropic optimal transport and trains a lightweight alignment head on frozen features.">
+    <figcaption><b>Overview.</b> Aligning MRI and ultrasound usually needs scans of the same fetus in both modalities, which are not publicly available. WASP builds an entropic optimal transport plan from unpaired cohorts using metadata that is recorded in every exam, gestational age and diagnostic plane (Phase I), then uses it to train a lightweight alignment head on frozen backbone features (Phase II).</figcaption>
+  </figure>
+
+  <section>
+    <h2>Abstract</h2>
+    <p>Magnetic Resonance Imaging (MRI) is widely regarded as the optimal sensor for fetal brain analysis due to its superior soft tissue contrast and anatomical detail. However, its high cost and operational burden make it invasive and difficult to obtain at scale. Ultrasound (US), in contrast, is cheap, safe, and routinely acquired, and as a result it has produced substantially larger datasets and a growing ecosystem of pretrained models. This asymmetry raises a natural question: <i>can we teach a US-only model to understand fetal MRI from only a limited set of examples?</i> The standard recipe, training a foundation model on subject-to-subject paired MRI–US scans, is not viable since no such paired fetal dataset is publicly available. We address this gap with Weakly Aligned Spatiotemporal Pairs (WASP), a framework that formulates cross-modal correspondence as an entropic Optimal Transport problem driven by clinical metadata, in particular Gestational Age (GA) and diagnostic planes, enabling the fitting of a lightweight alignment head that lifts MRI representations into the US latent space without fine-tuning the backbone. WASP yields its largest gains when MRI is unseen by the model during pretraining: on USFM, GA estimation error drops from 21.9 to 17.4 days and standard plane classification accuracy climbs from 61.9% to 69.0%. It also provides smaller, backbone-dependent refinements for backbones pretrained on both modalities, e.g. BioMedParse GA error from 6.5 to 6.0 days and SAM-Med2D plane accuracy from 83.3% to 88.1%.</p>
+  </section>
+
+  <section>
+    <h2>Method</h2>
+    <p class="lead">No public dataset pairs fetal MRI and ultrasound from the same subject. But every exam records <b>when</b> it was acquired (gestational age) and <b>where</b> it looks (the standard plane: transventricular, transthalamic or transcerebellar). WASP turns these two facts into soft cross-modal pairs.</p>
+    <div class="eq">$$C_{ij} = \mathcal{Z}\big(D^{\text{time}}_{ij}\big) + \mathcal{Z}\big(D^{\text{proto}}_{ij}\big) + D^{\text{space}}_{ij}$$</div>
+    <p>\(D^{\text{time}}\) is the gestational-age gap, \(D^{\text{proto}}\) the distance between the target-space prototypes of each sample's plane and age bin, and \(D^{\text{space}}\) is 1 when the planes differ. \(\mathcal{Z}\) standardizes each term.</p>
+    <div class="steps">
+      <div class="step"><b>1 · Weak pairing</b><p>Sinkhorn solves the entropic OT problem on \(C\). Each source sample is paired with the barycentric projection of the target embeddings under the plan.</p></div>
+      <div class="step"><b>2 · Alignment</b><p>A lightweight map \(\mathcal{F}\) (Ridge, CCA or a small MLP) is fitted on the weak pairs. The backbone stays frozen.</p></div>
+      <div class="step"><b>3 · Evaluation</b><p>A Ridge regressor (GA) and a linear SVM (plane) are fitted on the aligned features and evaluated on held-out subjects.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="two">
+      <div>
+        <h2>Data</h2>
+        <p>4,056 fetal brain images from 1,973 subjects. The ultrasound cohort comes from FETAL_PLANES_DB, HC18 and a UCLH cohort; the MRI cohort from FeTA, LFC and the CRL spatiotemporal atlas.</p>
+        <p>Ultrasound images are brain-stripped and rotated so that the head axis is horizontal. MRI volumes are registered to the atlas of their gestational week, and the three standard planes are sampled from them.</p>
+      </div>
+      <figure class="card">
+        <img src="static/preprocessing.png" alt="Preprocessing: MRI planes are sampled from registered volumes; ultrasound images are brain-stripped and axis-aligned.">
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Citation</h2>
+<pre>@inproceedings{correnti2026wasp,
+  title     = {{WASP}: Weakly Aligned Spatiotemporal Pairs for Fetal Brain {MRI}--Ultrasound Learning},
+  author    = {Correnti, Francesco and Magrini, Gabriele and Mistretta, Marco and
+               Biondi, Niccol{\`o} and Pala, Pietro and Ramalli, Alessandro and
+               Fiori, Simona and Bagdanov, Andrew D. and Lenge, Matteo},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2026}
+}</pre>
+  </section>
+
+  <footer>Media Integration and Communication Center (MICC), University of Florence</footer>
+</div>
+</body>
+</html>
