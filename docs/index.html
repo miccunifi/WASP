@@ -222,17 +222,7 @@ footer a, a { color: var(--accent); }
     <p>Magnetic Resonance Imaging (MRI) is widely regarded as the optimal sensor for fetal brain analysis due to its superior soft tissue contrast and anatomical detail. However, its high cost and operational burden make it invasive and difficult to obtain at scale. Ultrasound (US), in contrast, is cheap, safe, and routinely acquired, and as a result it has produced substantially larger datasets and a growing ecosystem of pretrained models. This asymmetry raises a natural question: <i>can we teach a US-only model to understand fetal MRI from only a limited set of examples?</i> The standard recipe, training a foundation model on subject-to-subject paired MRI–US scans, is not viable since no such paired fetal dataset is publicly available. We address this gap with Weakly Aligned Spatiotemporal Pairs (WASP), a framework that formulates cross-modal correspondence as an entropic Optimal Transport problem driven by clinical metadata, in particular Gestational Age (GA) and diagnostic planes, enabling the fitting of a lightweight alignment head that lifts MRI representations into the US latent space without fine-tuning the backbone. WASP yields its largest gains when MRI is unseen by the model during pretraining: on USFM, GA estimation error drops from 21.9 to 17.4 days and standard plane classification accuracy climbs from 61.9% to 69.0%. It also provides smaller, backbone-dependent refinements for backbones pretrained on both modalities, e.g. BioMedParse GA error from 6.5 to 6.0 days and SAM-Med2D plane accuracy from 83.3% to 88.1%.</p>
   </section>
 
-  <section>
-    <h2>The problem</h2>
-    <figure class="card">
-      <video autoplay muted loop playsinline preload="none" poster="static/videos/wasp-2-problem.jpg" aria-label="Few MRI scans, many ultrasound scans, no same-subject pairs">
-        <source src="static/videos/wasp-2-problem.webm" type="video/webm">
-      </video>
-      <figcaption>Fetal MRI is scarce, ultrasound is abundant, and no public dataset scans the same fetus with both. Cross-modal transfer needs pairs that do not exist.</figcaption>
-    </figure>
-  </section>
-
-  <section>
+<section>
     <h2>Method</h2>
     <p class="lead">No public dataset pairs fetal MRI and ultrasound from the same subject. But every exam records <b>when</b> it was acquired (gestational age) and <b>where</b> it looks (the standard plane: transventricular, transthalamic or transcerebellar). WASP turns these two facts into soft cross-modal pairs.</p>
     <div class="eq">$$C_{ij} = \mathcal{Z}\big(D^{\text{time}}_{ij}\big) + \mathcal{Z}\big(D^{\text{proto}}_{ij}\big) + D^{\text{space}}_{ij}$$</div>
@@ -242,18 +232,6 @@ footer a, a { color: var(--accent); }
       <div class="step"><b>2 · Alignment</b><p>A lightweight map \(\mathcal{F}\) (Ridge, CCA or a small MLP) is fitted on the weak pairs. The backbone stays frozen.</p></div>
       <div class="step"><b>3 · Evaluation</b><p>A Ridge regressor (GA) and a linear SVM (plane) are fitted on the aligned features and evaluated on held-out subjects.</p></div>
     </div>
-    <figure class="card" style="margin-top:22px">
-      <video autoplay muted loop playsinline preload="none" poster="static/videos/wasp-3-phase1.jpg" aria-label="Phase I: weak pairing with optimal transport">
-        <source src="static/videos/wasp-3-phase1.webm" type="video/webm">
-      </video>
-      <figcaption><b>Phase I · Weak pairing.</b> Scans are sorted by gestational age and plane. The space, time and prototype costs combine into \(C\), and the entropic OT plan links each MRI scan to ultrasound scans of the same plane and a similar age.</figcaption>
-    </figure>
-    <figure class="card" style="margin-top:22px">
-      <video autoplay muted loop playsinline preload="none" poster="static/videos/wasp-4-phase2.jpg" aria-label="Phase II: alignment on frozen features">
-        <source src="static/videos/wasp-4-phase2.webm" type="video/webm">
-      </video>
-      <figcaption><b>Phase II · Alignment.</b> With the encoder frozen, a lightweight map \(\mathcal{F}\) fitted on the weak pairs carries MRI features into the ultrasound plane clusters.</figcaption>
-    </figure>
   </section>
 
   <section>
