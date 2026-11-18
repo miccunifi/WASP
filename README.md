@@ -14,7 +14,7 @@ pip install -e .
 
 ## Data
 
-The metadata of the 4,056 brain images, with their splits, and their average-pooled patch embeddings from four frozen backbones will be released soon; download them into `data/`.
+The metadata of the 4,056 brain images, with their splits, and their average-pooled patch embeddings from four frozen backbones will be released soon; download them into `data/` when available.
 
 ```
 data/
